@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Firejab::VERSION
   s.authors     = ["Damon P. Cortesi"]
   s.email       = ["d.lifehacker@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/dacort/firejab"
   s.summary     = %q{Jabber interface for Campfire}
-  s.description = %q{TODO: Write a gem description}
+  s.description = %q{A simple Jabber bot that shuttles messages between Jabber and Campfire}
 
   s.rubyforge_project = "firejab"
 
