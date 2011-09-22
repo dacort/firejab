@@ -1,3 +1,7 @@
+## 0.0.4 (2011-09-22)
+
+* Bug fixes and formatting
+
 ## 0.0.3 (2011-09-22)
 
 * Add support for muting (yaauie)
