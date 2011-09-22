@@ -69,7 +69,7 @@ module Firejab
             jabber_username = message.from.strip
 
             if is_valid_user(jabber_username)
-              send_message_to_campfire(jabber_username, message.body)
+              process_incoming_message_from_authed_user( jabber_username, message.body)
             elsif message.body.match(/^\w{40}$/)
               # We received an auth token
               add_token(jabber_username, message.body)
@@ -117,9 +117,60 @@ module Firejab
         self.jabber_users.each do |jid, jid_info|
           next if jid_info[:status] == :unavailable
           next if jid_info[:campfire_uid] == from_uid rescue false
+          next if jid_info[:mute] rescue false
 
           send_jabber_message(jid, "#{campfire_name(from_uid)}: #{message}")
         end
+      end
+
+      def process_incoming_message_from_authed_user( from_jid, message)
+        if message.start_with? ':'
+          handle_command( message.split(':',2).last )
+        else
+          send_message_to_campfire( from_jid, message)
+        end
+      end
+
+      def handle_command( cmd )
+          case cmd
+          when *self.commands[:turn_notifications_off]
+            self.jabber_users[from_jid][:mute] = true
+            send_jabber_message( from_jid, 'Bot: Notifications are off.')
+          when *self.commands[:turn_notifications_on]
+            self.jabber_users[from_jid].delete[:mute]
+            send_jabber_message( from_jid, 'Bot: Notifications are on.')
+          when *self.commands[:get_help]
+            send_jabber_message( from_jid, %Q{Bot: here, let me help you.\n#{help_message}})
+          else
+            send_jabber_message( from_jid, 'Bot: I do not understand you.') 
+          end
+      end
+
+      def commands
+        @commands ||= {
+          :turn_notifications_on => [
+            'on',
+            'start',
+            'go',
+            'unmute'
+            ],
+          :turn_notifications_off => [
+            'off',
+            'stop',
+            'die',
+            'mute'
+            ],
+          :get_help => [
+            'help',
+            'commands'
+            ],
+        }
+      end
+
+      def help_message
+        commands.map do |effect,causes|
+          %Q{ - to #{effect.to_s.gsub('_',' ')}: #{causes.map{|i|':'+i}.join(',')}}
+        end.join('\n')
       end
 
       def send_message_to_campfire(from_jid, message)
