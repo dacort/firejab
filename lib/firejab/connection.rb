@@ -125,21 +125,21 @@ module Firejab
 
       def process_incoming_message_from_authed_user( from_jid, message)
         if message.start_with? ':'
-          handle_command( message.split(':',2).last )
+          handle_command( from_jid, message.split(':',2).last )
         else
           send_message_to_campfire( from_jid, message)
         end
       end
 
-      def handle_command( cmd )
+      def handle_command( from_jid, cmd )
           case cmd
-          when *self.commands[:turn_notifications_off]
+          when *commands[:turn_notifications_off]
             self.jabber_users[from_jid][:mute] = true
             send_jabber_message( from_jid, 'Bot: Notifications are off.')
-          when *self.commands[:turn_notifications_on]
+          when *commands[:turn_notifications_on]
             self.jabber_users[from_jid].delete[:mute]
             send_jabber_message( from_jid, 'Bot: Notifications are on.')
-          when *self.commands[:get_help]
+          when *commands[:get_help]
             send_jabber_message( from_jid, %Q{Bot: here, let me help you.\n#{help_message}})
           else
             send_jabber_message( from_jid, 'Bot: I do not understand you.') 
@@ -169,8 +169,8 @@ module Firejab
 
       def help_message
         commands.map do |effect,causes|
-          %Q{ - to #{effect.to_s.gsub('_',' ')}: #{causes.map{|i|':'+i}.join(',')}}
-        end.join('\n')
+          %Q{ - to #{effect.to_s.gsub('_',' ')}: #{causes.map{|i|':'+i}.join(', ')}}
+        end.join("\n")
       end
 
       def send_message_to_campfire(from_jid, message)
