@@ -137,7 +137,7 @@ module Firejab
             self.jabber_users[from_jid][:mute] = true
             send_jabber_message( from_jid, 'Bot: Notifications are off.')
           when *commands[:turn_notifications_on]
-            self.jabber_users[from_jid].delete[:mute]
+            self.jabber_users[from_jid].delete(:mute)
             send_jabber_message( from_jid, 'Bot: Notifications are on.')
           when *commands[:get_help]
             send_jabber_message( from_jid, %Q{Bot: here, let me help you.\n#{help_message}})

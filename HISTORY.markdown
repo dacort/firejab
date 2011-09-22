@@ -1,3 +1,7 @@
+## 0.0.5 (2011-09-22)
+
+* Another small bug fix on unmuting
+
 ## 0.0.4 (2011-09-22)
 
 * Bug fixes and formatting
