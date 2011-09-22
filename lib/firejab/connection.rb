@@ -129,7 +129,7 @@ module Firejab
 
         response = Typhoeus::Request.post("https://#{self.campfire_domain}/room/#{self.campfire_room_id}/speak.json", 
           :body => Yajl::Encoder.encode({:message => {:body => message}}),
-          :username => self.campfire_options[:auth].split(":").first, :password => "x",
+          :username => campfire_token, :password => "x",
           :headers => {"Content-type" => "application/json"}
         )
 
