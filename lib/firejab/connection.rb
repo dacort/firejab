@@ -115,6 +115,7 @@ module Firejab
 
       def send_message_to_jabber_users(from_uid, message)
         self.jabber_users.each do |jid, jid_info|
+          next if jid_info[:campfire_uid].nil? # only relay chat to authed users
           next if jid_info[:status] == :unavailable
           next if jid_info[:campfire_uid] == from_uid rescue false
           next if jid_info[:mute] rescue false
