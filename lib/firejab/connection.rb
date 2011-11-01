@@ -61,6 +61,10 @@ module Firejab
           puts "Fatal error with campfire, you'll need to restart"
         end
 
+        EM::PeriodicTimer.new(300) do
+          self.campfire.reconnect_retries -= 1 unless self.campfire.reconnect_retries.zero?
+        end
+
         EM::PeriodicTimer.new(1) do
           check_jabber_connection
 
